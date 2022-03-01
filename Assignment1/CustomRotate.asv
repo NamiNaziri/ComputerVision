@@ -52,7 +52,7 @@ function output = CustomRotate(im, angle)
         for j=1 :  double(newHeight)
             NewPos = round( R * transpose([double(i + minX -1),double(j +minY -1)]));
             NewPos = transpose(int16(NewPos));
-            if(NewPos(1) > 0 && NewPos(2)>0 && NewPos(1)<= width && NewPos(2)<= height)
+            if(NewPos(1) > 0 && NewPos(2)>0 && NewPos(1)<width && NewPos(2)<height)
                 NewRotatedImage(i,j,1) = im(NewPos(1) ,NewPos(2) ,1);
                 NewRotatedImage(i,j,2) = im(NewPos(1) ,NewPos(2) ,2);
                 NewRotatedImage(i,j,3) = im(NewPos(1) ,NewPos(2) ,3);
