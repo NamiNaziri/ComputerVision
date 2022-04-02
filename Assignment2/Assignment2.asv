@@ -28,8 +28,8 @@ for i = 1 : width
     end
 end
 
-figure
-imshow(BWImage,[]);
+%figure
+%imshow(BWImage,[]);
 
 % convert image to gray using the internal function
 % this function using the following weights 0.2989 * R + 0.5870 * G + 0.1140 * B 
@@ -47,8 +47,8 @@ height = size(im,1);
 width = size(im,2);
 
 greyImage = double(rgb2gray(im));
-figure
-imshow(greyImage,[]);
+%figure
+%imshow(greyImage,[]);
 floydSteinbergImage = zeros(height, width);
 
 
@@ -84,9 +84,9 @@ internalWith3Dim(:,:,1) = floydSteinbergImage(:,:);
 internalWith3Dim(:,:,2) = floydSteinbergImage(:,:);
 internalWith3Dim(:,:,3) = floydSteinbergImage(:,:);
 
-figure
-imshow(uint8(floydSteinbergImage),[]);
-imshow(uint8(floydSteinbergImage),[]);
+%figure
+%imshow(uint8(floydSteinbergImage),[]);
+%imshow(uint8(floydSteinbergImage),[]);
 im = double(imread('Untitled.png'));
 
 psnr(internalWith3Dim,im)
@@ -98,16 +98,43 @@ im = imread('Untitled.png');
 originalHeight = size(im,1);
 originalWidth = size(im,2);
 
-resizingFactor = 2.0;
+resizingFactor = 3.0;
 
-resizedImage = zeros(originalHeight * resizingFactor , originalWidth * originalWidth, 3);
+resizedImage = zeros(originalHeight * resizingFactor , originalWidth * resizingFactor, 3);
 
 resizedHeight = size(resizedImage,1);
 resizedWidth = size(resizedImage,2);
 
 for i=1 : resizedHeight
     for j = 1: resizedWidth
+        currentHeightPos = ((i - 1) / resizingFactor) + 1;
+        currentWidthPos = ((j - 1) / resizingFactor) + 1;
+        
+        
+        
+        
+        
+        top = floor(currentHeightPos);
+        bottom = min(max(ceil(currentHeightPos),1),originalHeight);
+        left = floor(currentWidthPos);
+        right = min(max(ceil(currentWidthPos),1),originalWidth);
+        
+        HeightAlpha = currentHeightPos - top;
+        WidthtAlpha = currentWidthPos - left;
+        
+        topLeftPixle = im(top,left,:);
+        topRightPixle = im(top,right,:);
+        bottomRightPixle = im(bottom,right,:);
+        bottomLeftPixle = im(bottom,left,:);
+        
+        resizedImage(i,j,:) = topLeftPixle + ...
+        (topRightPixle - topLeftPixle) * WidthtAlpha + ...
+        (bottomLeftPixle - topLeftPixle) * HeightAlpha + ...
+        (topLeftPixle - topRightPixle - bottomLeftPixle + bottomRightPixle) * WidthtAlpha * HeightAlpha;
         
     end
 end
 
+figure
+%imshow(uint8(resizedImage),[]);
+imshow(uint8(imresize(im,3),[]);
