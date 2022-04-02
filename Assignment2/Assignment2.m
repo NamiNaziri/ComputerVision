@@ -1,148 +1,118 @@
 clc; close all; clear;
 
-% importing the image
-im = im2double(imread('Untitled.png'));
-
-width = size(im,1);
-height = size(im,2);
-
-
-
-BWImage = zeros(width, height, 3);
-%figure
-%imshow(im);
-
-%converting the image using AVG of 3 channels.This will give us the best
-%psnr
-for i = 1 : width
-    for j=1 : height
-        avg = (im(i,j,1) + im(i,j,2) + im(i,j,3)) /3;
-        num = 0;
-        if( avg >= 0.5 ) %white
-            num = 1;
-        end
-        BWImage(i,j,1) = num;
-        BWImage(i,j,2) = num;
-        BWImage(i,j,3) = num;
-        
-    end
-end
-
-%figure
-%imshow(BWImage,[]);
-
-% convert image to gray using the internal function
-% this function using the following weights 0.2989 * R + 0.5870 * G + 0.1140 * B 
-
-%figure
-%imshow(internalWith3Dim,[]);
-psnr(BWImage,im)
-%psnr(internalWith3Dim,im)
+%im = imread('Untitled.png');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Question 3.b
 
-im = imread('Untitled.png');
-height = size(im,1);
-width = size(im,2);
+%im = imread('Untitled.png');
 
-greyImage = double(rgb2gray(im));
-%figure
-%imshow(greyImage,[]);
-floydSteinbergImage = zeros(height, width);
-
-
-for i=1 : height
-    for j=1 : width
-
-        if( greyImage(i,j) >= 127.5 ) %white
-            floydSteinbergImage(i,j) = 255;
-        else                       %black
-            floydSteinbergImage(i,j) = 0;    
-        end
-        
-        error = greyImage(i,j) - floydSteinbergImage(i,j); 
-        if(j+1 <= width)
-            greyImage(i,j + 1) = greyImage(i,j + 1) + error * ( 7 / 16);
-        end
-
-        if( i+1 <= height)
-            if(j+1 <= width)
-                greyImage(i+1,j+1) = greyImage(i+1,j+1) + error * (1/16); 
-            end
-            if(j-1 >= 1)
-                greyImage(i+1,j-1) = greyImage(i+1,j-1) + error * (3/16); 
-            end
-            greyImage(i + 1,j) = greyImage(i + 1,j) + error * (5/16); 
-        end
-    end
-end
-
-internalWith3Dim = zeros(height, width, 3);
-
-internalWith3Dim(:,:,1) = floydSteinbergImage(:,:);
-internalWith3Dim(:,:,2) = floydSteinbergImage(:,:);
-internalWith3Dim(:,:,3) = floydSteinbergImage(:,:);
-
-%figure
-%imshow(uint8(floydSteinbergImage),[]);
-%imshow(uint8(floydSteinbergImage),[]);
-im = double(imread('Untitled.png'));
-
-psnr(internalWith3Dim,im)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Question 4
 
-im = imread('Untitled.png');
-originalHeight = size(im,1);
-originalWidth = size(im,2);
+src = imread('Q5/Peppers.png');
+im = imread('Q5/LR_Peppers.png');
 
-resizingFactor = 0.2;
+height = size(im,1);
+width = size(im,2);
 
-resizedImage = zeros( ceil(originalHeight * resizingFactor) ,  ceil(originalWidth * resizingFactor), 3);
+resizedImage = uint8(zeros( ceil(height * 2) ,  ceil(width * 2), size(im,3)));
 
 resizedHeight = size(resizedImage,1);
 resizedWidth = size(resizedImage,2);
 
-for i=1 : resizedHeight
-    for j = 1: resizedWidth
-        currentHeightPos = (double(i) / resizingFactor) ;
-        currentWidthPos = (double(j) / resizingFactor);
+old_i = 1;
+old_j = 1;
 
-        
-        top = min(max(floor(currentHeightPos),1),originalHeight);
-        bottom = min(max(ceil(currentHeightPos),1),originalHeight);
-        left = min(max(floor(currentWidthPos),1),originalWidth);
-        right = min(max(ceil(currentWidthPos),1),originalWidth);
-        
-        HeightAlpha = currentHeightPos - top;
-        WidthtAlpha = currentWidthPos - left;
-        
-        topLeftPixle = double(im(top,left,:));
-        topRightPixle = double(im(top,right,:));
-        bottomRightPixle = double(im(bottom,right,:));
-        bottomLeftPixle = double(im(bottom,left,:));
-        
-        resizedImage(i,j,:) = topLeftPixle + ...
-        (topRightPixle - topLeftPixle) * WidthtAlpha + ...
-        (bottomLeftPixle - topLeftPixle) * HeightAlpha + ...
-        (topLeftPixle - topRightPixle - bottomLeftPixle + bottomRightPixle) * WidthtAlpha * HeightAlpha;
-        
+for i=1 : resizedHeight
+    for j=1 : resizedWidth
+        if mod((j-1), 2) == 0
+            if mod((i-1), 2) == 0
+                resizedImage(i,j,:) = im((i+1)/2,(j+1)/2,:);
+                old_j = old_j + 1;
+            else
+                resizedImage(i,j,:) = zeros(1,1,size(im,3));
+            end
+            
+            
+        end
     end
 end
 
-figure
-imshow(uint8(resizedImage),[]);
 
-internalResize =imresize(im,0.2,"bilinear","Antialiasing",false);
+for i=1 : resizedHeight
+    for j=1 : resizedWidth
+        
+        if mod(i, 2) == 0
+            if mod(j,2) == 0
 
-figure
-imshow(uint8(internalResize),[]);
+                top = min(max(floor(i-1),1),resizedHeight);
+                bottom = min(max(ceil(i+1),1),resizedHeight);
+                left = min(max(floor(j-1),1),resizedWidth);
+                right = min(max(ceil(j+1),1),resizedWidth);
 
+                topLeftPixle = double(resizedImage(top,left,:));
+                topRightPixle = double(resizedImage(top,right,:));
+                bottomRightPixle = double(resizedImage(bottom,right,:));
+                bottomLeftPixle = double(resizedImage(bottom,left,:));
 
-out = bilinearInterpolation(im, [resizedHeight resizedWidth]);
+                resizedImage(i,j,:) = (topLeftPixle + topRightPixle + bottomRightPixle + bottomLeftPixle) /4;
+            end
+        end
 
+    end
+end
 
+for i=1 : resizedHeight
+    for j=1 : resizedWidth
+        
+        if mod(i, 2) ~= 0 % i is odd
+            if mod(j,2) == 0 % j is even
 
-psnr(uint8(resizedImage),uint8(internalResize))
+                top = min(max(floor(i-1),1),resizedHeight);
+                bottom = min(max(ceil(i+1),1),resizedHeight);
+                left = min(max(floor(j-1),1),resizedWidth);
+                right = min(max(ceil(j+1),1),resizedWidth);
+
+                topPixle = double(resizedImage(top,j,:));
+                RightPixle = double(resizedImage(i,right,:));
+                bottomPixle = double(resizedImage(bottom,j,:));
+                LeftPixle = double(resizedImage(i,left,:));
+                if i == 1 || i == resizedHeight || i == resizedHeight -1
+                    resizedImage(i,j,:) = (RightPixle + bottomPixle + LeftPixle) / 3;
+                else
+                    resizedImage(i,j,:) = (topPixle + RightPixle + bottomPixle + LeftPixle) /4;
+                end
+                
+            end
+        end
+        
+        if mod(i, 2) == 0 % i is even
+            if mod(j,2) ~= 0 % j is odd
+
+                top = min(max(floor(i-1),1),resizedHeight);
+                bottom = min(max(ceil(i+1),1),resizedHeight);
+                left = min(max(floor(j-1),1),resizedWidth);
+                right = min(max(ceil(j+1),1),resizedWidth);
+
+                topPixle = double(resizedImage(top,j,:));
+                RightPixle = double(resizedImage(i,right,:));
+                bottomPixle = double(resizedImage(bottom,j,:));
+                LeftPixle = double(resizedImage(i,left,:));
+                if j == 1 || j == resizedWidth || j == resizedWidth - 1
+                    resizedImage(i,j,:) = (topPixle + RightPixle + bottomPixle) / 3;
+                else
+                    resizedImage(i,j,:) = (topPixle + RightPixle + bottomPixle + LeftPixle) /4;
+                end
+                
+            end
+        end
+
+    end
+end
+
+resized = imresize(im,2,'bilinear');
+imshow(resizedImage);
+
+psnr(resizedImage, src)
