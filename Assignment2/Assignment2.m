@@ -11,8 +11,8 @@ clc; close all; clear;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Question 4
 
-src = imread('Q5/Peppers.png');
-im = imread('Q5/LR_Peppers.png');
+src = imread('Q5/House.png');
+im = imread('Q5/LR_House.png');
 
 height = size(im,1);
 width = size(im,2);
@@ -79,8 +79,10 @@ for i=1 : resizedHeight
                 RightPixle = double(resizedImage(i,right,:));
                 bottomPixle = double(resizedImage(bottom,j,:));
                 LeftPixle = double(resizedImage(i,left,:));
-                if i == 1 || i == resizedHeight || i == resizedHeight -1
+                if i == 1 
                     resizedImage(i,j,:) = (RightPixle + bottomPixle + LeftPixle) / 3;
+                elseif i == resizedHeight || i == resizedHeight -1
+                        resizedImage(i,j,:) = (RightPixle + topPixle + LeftPixle) / 3;
                 else
                     resizedImage(i,j,:) = (topPixle + RightPixle + bottomPixle + LeftPixle) /4;
                 end
@@ -100,8 +102,10 @@ for i=1 : resizedHeight
                 RightPixle = double(resizedImage(i,right,:));
                 bottomPixle = double(resizedImage(bottom,j,:));
                 LeftPixle = double(resizedImage(i,left,:));
-                if j == 1 || j == resizedWidth || j == resizedWidth - 1
+                if j == 1 
                     resizedImage(i,j,:) = (topPixle + RightPixle + bottomPixle) / 3;
+                elseif j == resizedWidth || j == resizedWidth - 1
+                    resizedImage(i,j,:) = (topPixle + LeftPixle + bottomPixle) / 3;
                 else
                     resizedImage(i,j,:) = (topPixle + RightPixle + bottomPixle + LeftPixle) /4;
                 end
@@ -111,6 +115,9 @@ for i=1 : resizedHeight
 
     end
 end
+
+resizedImage(resizedHeight,:,:) = resizedImage(resizedHeight-1,:,:);
+resizedImage(:,resizedWidth,:) = resizedImage(:,resizedWidth-1,:);
 
 resized = imresize(im,2,'bilinear');
 imshow(resizedImage);
