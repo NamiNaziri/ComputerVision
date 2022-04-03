@@ -76,8 +76,10 @@ figure
 bar([0:255],histogram);
 
 
-out = EnhancePicture(im);
+%out = EnhancePicture(im);
 %out =EnhancePictureVer2(im);
+out =EnhancePictureVer3(im);
+
 
 newhis = my_histogram(out);
 newhis(1) = 0;
