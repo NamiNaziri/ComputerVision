@@ -1,0 +1,20 @@
+function [out] = EnhancePictureVer2(im)
+height = size(im,1);
+width = size(im,2);
+out = zeros( height ,  width, 1);
+gamma = 0.55;
+for i=1 : height
+    for j=1: width
+        if  J(i,j) >= 0 && im(i,j) < 30
+            
+            out(i,j) = GammaFunction(gamma, im(i,j));
+        elseif J(i,j) >= 60 && im(i,j) < 150
+            out(i,j) = GammaFunction(1.2, im(i,j));
+            
+        else
+            out(i,j) = im(i,j);
+        end
+    end
+end
+
+out= imadjust(uint8(out));

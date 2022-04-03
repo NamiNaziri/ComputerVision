@@ -1,7 +1,7 @@
 function [BWImage] = BestBWPsnr(im)
 
-    % importing the image
-%im = im2double(imread('Untitled.png'));
+% importing the image
+im = im2double(im);
 
 width = size(im,1);
 height = size(im,2);
@@ -28,11 +28,6 @@ for i = 1 : width
     end
 end
 
-%figure
-%imshow(BWImage,[]);
-
-% convert image to gray using the internal function
-% this function using the following weights 0.2989 * R + 0.5870 * G + 0.1140 * B 
 
 %figure
 %imshow(internalWith3Dim,[]);

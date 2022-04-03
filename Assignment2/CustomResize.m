@@ -35,7 +35,7 @@ for i=1 : resizedHeight
         
     end
 end
-
+resizedImage = uint8(resizedImage);
 %figure
 %imshow(uint8(resizedImage),[]);
 

@@ -40,9 +40,7 @@ internalWith3Dim(:,:,1) = floydSteinbergImage(:,:);
 internalWith3Dim(:,:,2) = floydSteinbergImage(:,:);
 internalWith3Dim(:,:,3) = floydSteinbergImage(:,:);
 
-%figure
-%imshow(uint8(floydSteinbergImage),[]);
-%imshow(uint8(floydSteinbergImage),[]);
-im = double(imread('Untitled.png'));
 
-psnr(internalWith3Dim,im);
+%im = double(imread('Q5/House.png'));
+
+%psnr(internalWith3Dim,im)
