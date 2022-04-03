@@ -11,115 +11,86 @@ clc; close all; clear;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Question 4
 
-src = imread('Q5/House.png');
-im = imread('Q5/LR_House.png');
+src = imread('Q5/Cameraman.png');
+Inimg = imread('Q5/LR_Cameraman.png');
+srcheight = size(src,1);
+srcwidth = size(src,2);
+%imshow(tempDes)
+
+%psnr(tempDes,im)
+% The second parameter is the magic number. by changing it we can produce
+% better quality images. ofcourse based on the current sample test cases
+% the magic number of 1 gives us the best quality. but 0.2 gives us almost
+% best quality in every situation.
+final = DHInterpolation(Inimg,0.2);
+
+resized = imresize(Inimg,2,'Bilinear');
+%imshow(uint8(final));
+
+%psnr(uint8(resized), src)
+%psnr(uint8(final), src)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Question 6
+im = imread('Q6/Image.tif');
+
+histogram = my_histogram(im);
+
+histogram(1) = 0;
+figure
+bar([0:255],histogram);
+
+
+
+J = double(imadjust(im));
+
+%out =  255 * (1 / (J + 1));
 
 height = size(im,1);
 width = size(im,2);
+out = J;
+for i=1 : height
+    for j=1: width
+        if(J(i,j) ~= 0)
+        out(i,j) =  100 * (1 / (0.1 * J(i,j) + 6));
+        end
+    end
+end
 
-resizedImage = uint8(zeros( ceil(height * 2) ,  ceil(width * 2), size(im,3)));
 
-resizedHeight = size(resizedImage,1);
-resizedWidth = size(resizedImage,2);
 
-old_i = 1;
-old_j = 1;
 
-for i=1 : resizedHeight
-    for j=1 : resizedWidth
-        if mod((j-1), 2) == 0
-            if mod((i-1), 2) == 0
-                resizedImage(i,j,:) = im((i+1)/2,(j+1)/2,:);
-                old_j = old_j + 1;
-            else
-                resizedImage(i,j,:) = zeros(1,1,size(im,3));
-            end
+
+out = zeros( height ,  width, 1);
+
+
+
+for i=1 : height
+    for j=1: width
+        if  J(i,j) >= 0 && J(i,j) < 150
             
-            
+            %out(i,j) = GammaFunction(gamma, J(i,j));
+        else
         end
     end
 end
 
+gamma = 0.045;
+alpha = power(double(255),(1-gamma));
+out = alpha* power(double(im),gamma);
 
-for i=1 : resizedHeight
-    for j=1 : resizedWidth
-        
-        if mod(i, 2) == 0
-            if mod(j,2) == 0
+out= imadjust(uint8(out),[0.8,0.95],[0,0.98]);
 
-                top = min(max(floor(i-1),1),resizedHeight);
-                bottom = min(max(ceil(i+1),1),resizedHeight);
-                left = min(max(floor(j-1),1),resizedWidth);
-                right = min(max(ceil(j+1),1),resizedWidth);
+%
+%NewPic = alphaLog * log(double(im + 1));
+%NewPic = (1/alphaLog) * power(10, NewPic);
 
-                topLeftPixle = double(resizedImage(top,left,:));
-                topRightPixle = double(resizedImage(top,right,:));
-                bottomRightPixle = double(resizedImage(bottom,right,:));
-                bottomLeftPixle = double(resizedImage(bottom,left,:));
 
-                resizedImage(i,j,:) = (topLeftPixle + topRightPixle + bottomRightPixle + bottomLeftPixle) /4;
-            end
-        end
+newhis = my_histogram(out );
+newhis(1) = 0;
+figure
+bar([0:255],newhis);
 
-    end
-end
+figure
+imshow([im uint8(out)])
 
-for i=1 : resizedHeight
-    for j=1 : resizedWidth
-        
-        if mod(i, 2) ~= 0 % i is odd
-            if mod(j,2) == 0 % j is even
-
-                top = min(max(floor(i-1),1),resizedHeight);
-                bottom = min(max(ceil(i+1),1),resizedHeight);
-                left = min(max(floor(j-1),1),resizedWidth);
-                right = min(max(ceil(j+1),1),resizedWidth);
-
-                topPixle = double(resizedImage(top,j,:));
-                RightPixle = double(resizedImage(i,right,:));
-                bottomPixle = double(resizedImage(bottom,j,:));
-                LeftPixle = double(resizedImage(i,left,:));
-                if i == 1 
-                    resizedImage(i,j,:) = (RightPixle + bottomPixle + LeftPixle) / 3;
-                elseif i == resizedHeight || i == resizedHeight -1
-                        resizedImage(i,j,:) = (RightPixle + topPixle + LeftPixle) / 3;
-                else
-                    resizedImage(i,j,:) = (topPixle + RightPixle + bottomPixle + LeftPixle) /4;
-                end
-                
-            end
-        end
-        
-        if mod(i, 2) == 0 % i is even
-            if mod(j,2) ~= 0 % j is odd
-
-                top = min(max(floor(i-1),1),resizedHeight);
-                bottom = min(max(ceil(i+1),1),resizedHeight);
-                left = min(max(floor(j-1),1),resizedWidth);
-                right = min(max(ceil(j+1),1),resizedWidth);
-
-                topPixle = double(resizedImage(top,j,:));
-                RightPixle = double(resizedImage(i,right,:));
-                bottomPixle = double(resizedImage(bottom,j,:));
-                LeftPixle = double(resizedImage(i,left,:));
-                if j == 1 
-                    resizedImage(i,j,:) = (topPixle + RightPixle + bottomPixle) / 3;
-                elseif j == resizedWidth || j == resizedWidth - 1
-                    resizedImage(i,j,:) = (topPixle + LeftPixle + bottomPixle) / 3;
-                else
-                    resizedImage(i,j,:) = (topPixle + RightPixle + bottomPixle + LeftPixle) /4;
-                end
-                
-            end
-        end
-
-    end
-end
-
-resizedImage(resizedHeight,:,:) = resizedImage(resizedHeight-1,:,:);
-resizedImage(:,resizedWidth,:) = resizedImage(:,resizedWidth-1,:);
-
-resized = imresize(im,2,'bilinear');
-imshow(resizedImage);
-
-psnr(resizedImage, src)
