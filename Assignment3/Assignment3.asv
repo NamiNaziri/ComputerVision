@@ -1,6 +1,7 @@
 clc; close all; clear;
 
 ImageDatasetPath = 'Questions/Q3/';
+
 FeatureDataset = cell(1000,4);
 
 s = dir(ImageDatasetPath);
@@ -12,18 +13,59 @@ for i=1:numel(s)
         FeatureDataset{k,1} = s(i).name;
         Answer = s(i).name(find(s(i).name == '_', 1, 'last') + 1: end - 4);
         FeatureDataset{k,2} = str2num(Answer);
-        FeatureDataset{k,3} = medfilt2(rgb2gray(I),[6,6]);
         
         
+        
+        
+        M = repmat(all(I<10,3),[1 1 3]);
+        I(M) = 255;
         
         FeatureDataset{k,4} = RGBMid(I);
+        
+        H = fspecial('Average', [3,3]);
+        I = imfilter(I,H);
+        FeatureDataset{k,3} = imfilter(rgb2gray(I),H); 
+        %FeatureDataset{k,3} = medfilt2(rgb2gray(I),[2,2]);
+        
+        
+        
+        
 
 
         k = k + 1;
     end
 end
-testImage = imcomplement(im2double(FeatureDataset{k-1,3})) ;
-testImage = testImage(2:end - 60,3: end - 3);
+%%
+
+ImageSourcePath = 'Questions/Q3Helper/';
+SourceDataset = cell(20,3);
+
+s = dir(ImageSourcePath);
+
+L = 1;
+for i=1:numel(s)
+    if s(i).isdir == 0
+        I = imread([ImageSourcePath s(i).name]);
+        SourceDataset{L,1} = s(i).name;
+        
+        Answer = s(i).name(find(s(i).name == '_', 1, 'last') + 1: end - 4);
+        I = imresize(I,[100,100]);
+        SourceDataset{L,2} = I;
+        SourceDataset{L,3} = str2num(Answer);
+
+        L = L + 1;
+    end
+end
+
+%%
+
+sourceWidth = 100;
+sourceHeight = 100;
+
+threshold1 = 100;
+
+testImage = imcomplement(im2double(FeatureDataset{36,3})) ;
+testImage = testImage(8:end - 60,8: end - 10);
 VerticalScan = sum( testImage()) ;
 
 [xMin,xMax] = findMinMaxArray(VerticalScan);
@@ -32,13 +74,61 @@ HorizontalScan = (sum( testImage,2 ))' ;
 [yMin,yMax] = findMinMaxArray(HorizontalScan);
 
 
-for i = 1 : size(xMin,2)
-    for j = 1 : size(yMin,2)
+for i = 1 : min(size(xMin,2),size(xMax,2))
+    for j = 1 : min(size(yMin,2),size(yMax,2))
         cropedImage = testImage(yMin(j):yMax(j),xMin(i):xMax(i));
         if sum(cropedImage(:)) > 5
-            figure 
-            imshow(cropedImage)
+            VerticalScan = sum( cropedImage()) ;
+
+            [xMin1,xMax1] = findMinMaxArray(VerticalScan);
+            HorizontalScan = (sum( cropedImage,2 ))' ;
+
+            [yMin1,yMax1] = findMinMaxArray(HorizontalScan);
+            
+            cropedImageHeight = size(cropedImage,1);
+            cropedImageWidth = size(cropedImage,2);
+            
+            f = FeatureDataset{33,4}(yMin(j) +6 + yMin1: yMax(j)+6 - (cropedImageHeight - yMax1) ,xMin(i)+6 + xMin1: xMax(i)+6 -(cropedImageWidth - xMax1),:);
+            %f = FeatureDataset{35,4}(yMin(j) +6:yMax(j) + 6,xMin(i) + 6:xMax(i) + 6,:);
+            f = imresize(f,[sourceHeight,sourceWidth]);
+            
+            red = f(:,:,1);
+            blue = f(:,:,3);
+            
+            isPositive = sum(red(:)) > sum(blue(:));
+            
+            minError = 10000000;
+            selectedImage = 1;
+            
+            if( abs (sum(red(:)) - sum(blue(:))) > threshold1)
+                
+                %for k = 1 : 18
+                  %  err = immse(f, SourceDataset{k,2});
+                  %  if(err < minError)
+                 %       selectedImage = k;
+                 %   end
+               % end
+               % figure; imshow([f SourceDataset{selectedImage,2}]);
+               imwrite (f,[num2str(i) num2str(j) '.png']);
+            end
+            
+            
+            
+            
+            
         end
     end
 end
+
+%%
+I = imread([ImageDatasetPath FeatureDataset{35,1}]);
+
+M = repmat(all(I<10,3),[1 1 3]);
+I(M) = 255;
+
+I = RGBMid(I);
+%H = fspecial('gaussian', [2,2],2/6);
+H = fspecial('Average', [2,2]);
+I = imfilter(rgb2gray(I),H); 
+imshow(I)
 %im = imread('Untitled.png');
