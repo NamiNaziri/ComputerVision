@@ -15,12 +15,12 @@ for i=1:numel(s)
         FeatureDataset{k,2} = str2num(Answer);
         
         
-        
+        FeatureDataset{k,4} = RGBMid(I);
         
         M = repmat(all(I<10,3),[1 1 3]);
         I(M) = 255;
         
-        FeatureDataset{k,4} = I;
+        
         
         H = fspecial('Average', [3,3]);
         I = imfilter(I,H);
@@ -58,10 +58,10 @@ for i=1:numel(s)
 end
 
 %%
-class = 81;
+class = 46;
 rightGuesses = 0;
 
-sourceWidth = 100;
+sourceWidth = 60;
 sourceHeight = 100;
 
 threshold1 = 100;
@@ -96,13 +96,13 @@ finalAnswer = 0;
                 cropedImageHeight = size(cropedImage,1);
                 cropedImageWidth = size(cropedImage,2);
 
-                f = FeatureDataset{p,4}(yMin(j) +6 + yMin1: yMax(j)+6 - (cropedImageHeight - yMax1) ,xMin(i)+6 + xMin1: xMax(i)+6 -(cropedImageWidth - xMax1),:);
+                f = FeatureDataset{p,4}(yMin(j) +6  + yMin1: yMax(j) + 6  - (cropedImageHeight - yMax1) ,xMin(i) +6 + xMin1: xMax(i) + 6 -(cropedImageWidth - xMax1),:);
                 %f = FeatureDataset{35,4}(yMin(j) +6:yMax(j) + 6,xMin(i) + 6:xMax(i) + 6,:);
                 f = imresize(f,[sourceHeight,sourceWidth]);
 
                 red = f(:,:,1);
                 blue = f(:,:,3);
-
+                
                 isPositive = sum(red(:)) > sum(blue(:));
 
                 sign = -1;
@@ -119,16 +119,18 @@ finalAnswer = 0;
                     for l = 1 : 18
                         err = immse(rgb2gray(f), rgb2gray(SourceDataset{l,2}));
                         if(err < minError)
-                            selectedImage = l;
+                           selectedImage = l;
                             minError = err;
                         end
                     end
                     if( p == class)
-                    figure; imshow([f SourceDataset{selectedImage,2}]);
+                        figure; imshow([f SourceDataset{selectedImage,2}]);
+                        %figure; imshow(f );
+                        imwrite (f,[num2str(i) num2str(j) '.png']);
                     end
                     a = sign * SourceDataset{selectedImage,3};
                     finalAnswer = finalAnswer + a;
-                   %imwrite (f,[num2str(i) num2str(j) '.png']);
+                   
                 end
             end
         end
@@ -140,14 +142,18 @@ else
 end
 end
 %%
-%I = imread([ImageDatasetPath FeatureDataset{35,1}]);
+I = imread([ImageDatasetPath FeatureDataset{46,1}]);
+figure;imshow(I)
+
+I = RGBMid(I);
+
 
 %M = repmat(all(I<10,3),[1 1 3]);
 %I(M) = 255;
 
-%I = RGBMid(I);
+
 %H = fspecial('gaussian', [2,2],2/6);
 %H = fspecial('Average', [2,2]);
 %I = imfilter(rgb2gray(I),H); 
-%imshow(I)
+figure;imshow(I)
 %im = imread('Untitled.png');
