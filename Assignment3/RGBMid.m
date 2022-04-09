@@ -1,4 +1,4 @@
-function out = RGBMid(noisyRGB)
+function out = RGBMid(noisyRGB, k)
     % Extract the individual red, green, and blue color channels.
     redChannel = noisyRGB(:, :, 1);
     greenChannel = noisyRGB(:, :, 2);
@@ -6,9 +6,9 @@ function out = RGBMid(noisyRGB)
     
     
     % Median Filter the channels:
-    redMF = medfilt2(redChannel, [3 3]);
-    greenMF = medfilt2(greenChannel, [3 3]);
-    blueMF = medfilt2(blueChannel, [3 3]);
+    redMF = medfilt2(redChannel, [k k]);
+    greenMF = medfilt2(greenChannel, [k k]);
+    blueMF = medfilt2(blueChannel, [k k]);
     
     % Find the noise in the red.
     noiseImage = (redChannel == 0 | redChannel == 255);
