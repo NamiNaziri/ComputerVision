@@ -62,7 +62,7 @@ for i=1:numel(s)
 end
 
 %%
-class = 79;
+class = 84;
 rightGuesses = 0;
 
 sourceWidth = 60;
