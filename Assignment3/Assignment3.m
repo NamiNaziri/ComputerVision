@@ -12,7 +12,7 @@ for i=1:numel(s)
         I = imread([ImageDatasetPath s(i).name]);
         FeatureDataset{k,1} = s(i).name;
         Answer = s(i).name(find(s(i).name == '_', 1, 'last') + 1: end - 4);
-        FeatureDataset{k,2} = str2num(Answer);
+         FeatureDataset{k,2} = str2num(Answer);
         
         f = RGBMid(I,3);
         f = RGBMid(f,3);
@@ -42,7 +42,7 @@ end
 %%
 
 ImageSourcePath = 'Questions/Q3_Source/';
-SourceDataset = cell(20,3);
+SourceDataset = cell(18,3);
 
 s = dir(ImageSourcePath);
 
@@ -62,7 +62,7 @@ for i=1:numel(s)
 end
 
 %%
-class = 84;
+class = 98;
 rightGuesses = 0;
 
 sourceWidth = 60;
