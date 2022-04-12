@@ -1,5 +1,5 @@
 function out = RGBMid(noisyRGB, k)
-
+    %{
     % Extract the individual red, green, and blue color channels.
     redChannel = noisyRGB(:, :, 1);
     greenChannel = noisyRGB(:, :, 2);
@@ -28,7 +28,14 @@ function out = RGBMid(noisyRGB, k)
     noiseFreeBlue(noiseImage) = blueMF(noiseImage);
     % Reconstruct the noise free RGB image
     out = cat(3, noiseFreeRed, noiseFreeGreen, noiseFreeBlue);
+%}
 
+R = img(:,:,1);
+G = img(:,:,2);
+B = img(:,:,3);
+medfilimg(:,:,1) = medfilt2(R);
+medfilimg(:,:,2) = medfilt2(G);
+medfilimg(:,:,3) = medfilt2(B);
 
 
 end

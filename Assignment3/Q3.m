@@ -1,4 +1,5 @@
-clc; close all; clear;
+function [] = Q3()
+
 
 ImageDatasetPath = 'Questions/Q3/';
 
@@ -16,8 +17,8 @@ for i=1:numel(s)
         
         f = RGBMid(I,3);
         f = RGBMid(f,3);
-        f = RGBMid(f,3);
-        f = RGBMid(f,3);
+        %f = RGBMid(f,3);
+        %f = RGBMid(f,3);
         
         FeatureDataset{k,4} = RGBMid(f,3);
         
@@ -40,9 +41,9 @@ for i=1:numel(s)
     end
 end
 %%
-clc
-ImageSourcePath = 'Questions/Numbers/';
-SourceDataset = cell(18,3);
+
+ImageSourcePath = 'Questions/Q3_Source/';
+SourceDataset = cell(9,3);
 
 s = dir(ImageSourcePath);
 
@@ -53,7 +54,6 @@ for i=1:numel(s)
         SourceDataset{L,1} = s(i).name;
         
         Answer = s(i).name(find(s(i).name == '_', 1, 'last') + 1: end - 4);
-
         SourceDataset{L,2} = I;
         SourceDataset{L,3} = str2num(Answer);
 
@@ -61,8 +61,8 @@ for i=1:numel(s)
     end
 end
 
-
-class = 48;
+%%
+class = 14;
 rightGuesses = 0;
 
 sourceWidth = 60;
@@ -121,14 +121,14 @@ finalAnswer = 0;
                 if( abs (sum(red(:)) - sum(blue(:))) > threshold1)
 
                     for l = 1 : size(SourceDataset,1)
-                        err = immse(rgb2gray(f), rgb2gray(SourceDataset{l,2}));
+                        err = immse(double(imbinarize(rgb2gray(f),'global')),double(imbinarize(rgb2gray(SourceDataset{l,2}),'global')));
                         if(err < minError)
                            selectedImage = l;
                             minError = err;
                         end
                     end
                     if( p == class)
-                        figure; imshow([f SourceDataset{selectedImage,2}]);
+                        figure; imshow([im2bw(f) im2bw(SourceDataset{selectedImage,2})]);
                         %figure; imshow(f );
                         imwrite (f,[num2str(i) num2str(j) '.png']);
                     end
@@ -145,4 +145,20 @@ else
     p
 end
 end
+%%
+I = imread([ImageDatasetPath FeatureDataset{14,1}]);
+figure;imshow(I)
 
+I = RGBMid(I,3);
+I = RGBMid(I,3);
+%H = fspecial('gaussian', [2,2],2/6);
+
+
+I=imbinarize(rgb2gray(I),'global');
+
+I = medfilt2(I, [3 3]);
+figure;imshow(I)
+%im = imread('Untitled.png');
+
+
+end
