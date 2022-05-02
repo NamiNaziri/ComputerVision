@@ -1,0 +1,52 @@
+function [Top,Left,Right,Bottom] = FindHogForEdges(img)
+
+    Croped = img(1:size(img,1) * 0.1,:,:); %Croped Top
+    
+    R=transpose(imhist(Croped(:,:,1));
+    G=imhist(Croped(:,:,2));
+    B=imhist(Croped(:,:,3));
+    
+    features1 = extractHOGFeatures(Croped);
+    features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [features1 features2 R G B];
+    Top =  features;
+
+    Croped = img(size(img,1) * 0.9:end,:,:); %Croped Bottom
+    
+    
+    R=imhist(Croped(:,:,1));
+    G=imhist(Croped(:,:,2));
+    B=imhist(Croped(:,:,3));
+    
+    features1 = extractHOGFeatures(Croped);
+    features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [features1 features2 R G B];
+    
+    Bottom =  features;
+
+    Croped = img(:,size(img,2) * 0.9:end,:); %Croped Right
+   
+    
+    R=imhist(Croped(:,:,1));
+    G=imhist(Croped(:,:,2));
+    B=imhist(Croped(:,:,3));
+    
+    features1 = extractHOGFeatures(Croped);
+    features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [features1 features2 R G B];
+    
+    Right =  features;
+
+    Croped = img(:,1:size(img,2) * 0.1,:); %Croped Left
+    
+    
+    R=imhist(Croped(:,:,1));
+    G=imhist(Croped(:,:,2));
+    B=imhist(Croped(:,:,3));
+    
+    features1 = extractHOGFeatures(Croped);
+    features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [features1 features2 R G B];
+    
+    Left =  features;
+end
