@@ -1,7 +1,10 @@
 function FoundImage = InitializeFoundImageStruct(imageCell)
+    
+    srcWidth = 1920;
+    srcHeight = 1200;
 
-    lastRow = 5;
-    lastColumn = 8;
+    lastRow = srcHeight / size(imageCell{1,1},1);
+    lastColumn = srcWidth / size(imageCell{1,1},2);
 
     FoundImage = struct('index', repmat({[]}, 1, nnz(~cellfun(@isempty,imageCell))));
     k = 1;

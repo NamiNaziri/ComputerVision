@@ -1,52 +1,63 @@
 function [Top,Left,Right,Bottom] = FindHogForEdges(img)
+    
 
-    Croped = img(1:size(img,1) * 0.1,:,:); %Croped Top
+    numOfPixle = 1;
+    Croped = img(1:numOfPixle,:,:); %Croped Top
     
-    R=transpose(imhist(Croped(:,:,1));
-    G=imhist(Croped(:,:,2));
-    B=imhist(Croped(:,:,3));
+    sumR = mean(Croped(:,:,1));
+    sumG = mean(Croped(:,:,2));
+    sumB = mean(Croped(:,:,3));
+    R=single(transpose(imhist(Croped(:,:,1))));
+    G=single(transpose(imhist(Croped(:,:,2))));
+    B=single(transpose(imhist(Croped(:,:,3))));
     
-    features1 = extractHOGFeatures(Croped);
-    features2 = extractLBPFeatures(rgb2gray(Croped));
-    features = [features1 features2 R G B];
+    %features1 = extractHOGFeatures(Croped);
+    %features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [R G B single(transpose(Croped(:)))];
     Top =  features;
 
-    Croped = img(size(img,1) * 0.9:end,:,:); %Croped Bottom
+    Croped = img(size(img,1) - numOfPixle +1 :end,:,:); %Croped Bottom
     
+        sumR = mean(Croped(:,:,1));
+    sumG = mean(Croped(:,:,2));
+    sumB = mean(Croped(:,:,3));
+    R=single(transpose(imhist(Croped(:,:,1))));
+    G=single(transpose(imhist(Croped(:,:,2))));
+    B=single(transpose(imhist(Croped(:,:,3))));
     
-    R=imhist(Croped(:,:,1));
-    G=imhist(Croped(:,:,2));
-    B=imhist(Croped(:,:,3));
-    
-    features1 = extractHOGFeatures(Croped);
-    features2 = extractLBPFeatures(rgb2gray(Croped));
-    features = [features1 features2 R G B];
+    %features1 = extractHOGFeatures(Croped);
+    %features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [R G B  single(transpose(Croped(:)))];
     
     Bottom =  features;
 
-    Croped = img(:,size(img,2) * 0.9:end,:); %Croped Right
+    Croped = img(:,size(img,2) - numOfPixle +1:end,:); %Croped Right
    
+        sumR = mean(Croped(:,:,1));
+    sumG = mean(Croped(:,:,2));
+    sumB = mean(Croped(:,:,3));
+    R=single(transpose(imhist(Croped(:,:,1))));
+    G=single(transpose(imhist(Croped(:,:,2))));
+    B=single(transpose(imhist(Croped(:,:,3))));
     
-    R=imhist(Croped(:,:,1));
-    G=imhist(Croped(:,:,2));
-    B=imhist(Croped(:,:,3));
-    
-    features1 = extractHOGFeatures(Croped);
-    features2 = extractLBPFeatures(rgb2gray(Croped));
-    features = [features1 features2 R G B];
+    %features1 = extractHOGFeatures(Croped);
+    %features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [R G B   single(transpose(Croped(:)))];
     
     Right =  features;
 
-    Croped = img(:,1:size(img,2) * 0.1,:); %Croped Left
+    Croped = img(:,1:numOfPixle,:); %Croped Left
     
+        sumR = mean(Croped(:,:,1));
+    sumG = mean(Croped(:,:,2));
+    sumB = mean(Croped(:,:,3));
+    R=single(transpose(imhist(Croped(:,:,1))));
+    G=single(transpose(imhist(Croped(:,:,2))));
+    B=single(transpose(imhist(Croped(:,:,3))));
     
-    R=imhist(Croped(:,:,1));
-    G=imhist(Croped(:,:,2));
-    B=imhist(Croped(:,:,3));
-    
-    features1 = extractHOGFeatures(Croped);
-    features2 = extractLBPFeatures(rgb2gray(Croped));
-    features = [features1 features2 R G B];
+    %features1 = extractHOGFeatures(Croped);
+    %features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [R G B  single(transpose(Croped(:)))];
     
     Left =  features;
 end
