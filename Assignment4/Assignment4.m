@@ -1,8 +1,15 @@
 
-%% second Method
+clc; close all; clear;
+inputPath = 'Q3/Test/13.jpg';
+outputPath = 'Q3/Output/';
+
+CreateTestCase(inputPath, outputPath);
+
+
+% second Method
 
 clc; close all; clear;
-ImageDatasetPath = 'Q3/Puzzle_2_160/';
+ImageDatasetPath = 'Q3/Output/';
 
 srcWidth = 1920;
 srcHeight = 1200;
@@ -75,7 +82,7 @@ for i=1:size(Dataset,1)
                     TempPossibleAnswer(k).rowInFoundImage = u;
                     TempPossibleAnswer(k).ColumnInFoundImage = v; 
                     TempPossibleAnswer(k).NotAssinedIndex = j;
-                    TempPossibleAnswer(k).Norm = finalNorm - 400 * size(n,2);
+                    TempPossibleAnswer(k).Norm = finalNorm - 750 * size(n,2);
                     k = k + 1;
                 end
             end
@@ -99,9 +106,10 @@ for i=1:size(Dataset,1)
     
     NotAssigned(a.NotAssinedIndex) = []; % Since we assigned this index, we can remove it from not assigned array
     if(mod(j,10) == 0)
-       out = CellToImage(imageCell);
-    imshow(out)
+           out = CellToImage(imageCell);
+        imshow(out)
     end
+
 end
         
        out = CellToImage(imageCell);

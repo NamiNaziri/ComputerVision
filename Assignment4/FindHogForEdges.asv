@@ -1,7 +1,8 @@
 function [Top,Left,Right,Bottom] = FindHogForEdges(img)
     
 
-    numOfPixle = 1;
+    numOfPixle = 3;
+    Croped1 = img(1:1,:,:);
     Croped = img(1:numOfPixle,:,:); %Croped Top
     
     sumR = mean(Croped(:,:,1));
@@ -12,13 +13,14 @@ function [Top,Left,Right,Bottom] = FindHogForEdges(img)
     B=single(transpose(imhist(Croped(:,:,3))));
     
     %features1 = extractHOGFeatures(Croped);
-    %features2 = extractLBPFeatures(rgb2gray(Croped));
-    features = [R G B single(transpose(Croped(:)))];
+    features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [features2 R G B single(transpose(Croped1(:)))];
     Top =  features;
-
+    
+    Croped1 = img(size(img,1) :end,:,:); %Croped Bottom
     Croped = img(size(img,1) - numOfPixle +1 :end,:,:); %Croped Bottom
     
-        sumR = mean(Croped(:,:,1));
+    sumR = mean(Croped(:,:,1));
     sumG = mean(Croped(:,:,2));
     sumB = mean(Croped(:,:,3));
     R=single(transpose(imhist(Croped(:,:,1))));
@@ -26,8 +28,8 @@ function [Top,Left,Right,Bottom] = FindHogForEdges(img)
     B=single(transpose(imhist(Croped(:,:,3))));
     
     %features1 = extractHOGFeatures(Croped);
-    %features2 = extractLBPFeatures(rgb2gray(Croped));
-    features = [R G B  single(transpose(Croped(:)))];
+    features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [features2 R G B  single(transpose(Croped(:)))];
     
     Bottom =  features;
 
@@ -41,8 +43,8 @@ function [Top,Left,Right,Bottom] = FindHogForEdges(img)
     B=single(transpose(imhist(Croped(:,:,3))));
     
     %features1 = extractHOGFeatures(Croped);
-    %features2 = extractLBPFeatures(rgb2gray(Croped));
-    features = [R G B   single(transpose(Croped(:)))];
+    features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [features2 R G B   single(transpose(Croped(:)))];
     
     Right =  features;
 
@@ -56,8 +58,8 @@ function [Top,Left,Right,Bottom] = FindHogForEdges(img)
     B=single(transpose(imhist(Croped(:,:,3))));
     
     %features1 = extractHOGFeatures(Croped);
-    %features2 = extractLBPFeatures(rgb2gray(Croped));
-    features = [R G B  single(transpose(Croped(:)))];
+    features2 = extractLBPFeatures(rgb2gray(Croped));
+    features = [features2 R G B  single(transpose(Croped(:)))];
     
     Left =  features;
 end
