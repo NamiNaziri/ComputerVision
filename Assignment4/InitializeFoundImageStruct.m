@@ -15,7 +15,7 @@ function FoundImage = InitializeFoundImageStruct(imageCell)
                 FoundImage(k).Column =  j;
                 img = imageCell{i,j};
                 
-                [Top,Left,Right,Bottom] = FindHogForEdges(img);
+                [Top,Left,Right,Bottom] = ExtractFeaturesForEdges(img);
                 
                 FoundImage(k).Top =  Top;
                 FoundImage(k).Bottom =  Bottom;

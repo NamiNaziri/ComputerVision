@@ -1,4 +1,4 @@
-function [Top,Left,Right,Bottom] = FindHogForEdges(img)
+function [Top,Left,Right,Bottom] = ExtractFeaturesForEdges(img)
     
 
     numOfPixle = 1;
