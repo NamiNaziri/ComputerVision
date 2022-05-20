@@ -1,6 +1,6 @@
 
 clc; close all; clear;
-inputPath = 'Q3/Test/1.jpg';
+inputPath = 'Q3/Test/22.jpg';
 outputPath = 'Q3/Output/';
 
 CreateTestCase(inputPath, outputPath);
