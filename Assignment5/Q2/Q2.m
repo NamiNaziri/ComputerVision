@@ -16,6 +16,7 @@ ff = final_image > 1;
 final_image (ff ) = 1;
 final_image (~ff ) = 0;
 
+imwrite(final_image,'final_image.tif');
 
 height = size(final_image,1);
 width = size(final_image,2);

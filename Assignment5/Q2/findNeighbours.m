@@ -4,14 +4,9 @@ function tmpResult = findNeighbours(B, tmpResult,i,j, cellCount)
         if(B(i-1,j) ~= 0)
             if( tmpResult(i-1,j) == 0 )
                 tmpResult(i-1,j) = cellCount;
-                findNeighbours(B,tmpresult,i-1,j,cellCount);
-            else
-                return;
+                tmpResult= findNeighbours(B,tmpResult,i-1,j,cellCount);
             end
-            
         end
-    else
-        return;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -20,14 +15,10 @@ function tmpResult = findNeighbours(B, tmpResult,i,j, cellCount)
         if(B(i-1,j-1) ~= 0)
             if( tmpResult(i-1,j-1) == 0 )
                 tmpResult(i-1,j-1) = cellCount;
-                findNeighbours(B,tmpresult,i-1,j-1,cellCount);
-            else
-                return;
+                tmpResult= findNeighbours(B,tmpResult,i-1,j-1,cellCount);
             end
             
         end
-    else
-        return;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,14 +27,10 @@ function tmpResult = findNeighbours(B, tmpResult,i,j, cellCount)
         if(B(i-1,j+1) ~= 0)
             if( tmpResult(i-1,j+1) == 0 )
                 tmpResult(i-1,j+1) = cellCount;
-                findNeighbours(B,tmpresult,i-1,j+1,cellCount);
-            else
-                return;
+                tmpResult= findNeighbours(B,tmpResult,i-1,j+1,cellCount);
             end
             
         end
-    else
-        return;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,14 +39,10 @@ function tmpResult = findNeighbours(B, tmpResult,i,j, cellCount)
         if(B(i,j-1) ~= 0)
             if( tmpResult(i,j-1) == 0 )
                 tmpResult(i,j-1) = cellCount;
-                findNeighbours(B,tmpresult,i,j-1,cellCount);
-            else
-                return;
+                tmpResult= findNeighbours(B,tmpResult,i,j-1,cellCount);
             end
             
         end
-    else
-        return;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,14 +51,10 @@ function tmpResult = findNeighbours(B, tmpResult,i,j, cellCount)
         if(B(i,j+1) ~= 0)
             if( tmpResult(i,j+1) == 0 )
                 tmpResult(i,j+1) = cellCount;
-                findNeighbours(B,tmpresult,i,j+1,cellCount);
-            else
-                return;
+                tmpResult= findNeighbours(B,tmpResult,i,j+1,cellCount);
             end
             
         end
-    else
-        return;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,14 +63,10 @@ function tmpResult = findNeighbours(B, tmpResult,i,j, cellCount)
         if(B(i+1,j) ~= 0)
             if( tmpResult(i+1,j) == 0 )
                 tmpResult(i+1,j) = cellCount;
-                findNeighbours(B,tmpresult,i+1,j,cellCount);
-            else
-                return;
+                tmpResult= findNeighbours(B,tmpResult,i+1,j,cellCount);
             end
             
         end
-    else
-        return;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,14 +75,10 @@ function tmpResult = findNeighbours(B, tmpResult,i,j, cellCount)
         if(B(i+1,j-1)~= 0)
             if( tmpResult(i+1,j-1) == 0 )
                 tmpResult(i+1,j-1) = cellCount;
-                findNeighbours(B,tmpresult,i+1,j-1,cellCount);
-            else
-                return;
+                tmpResult= findNeighbours(B,tmpResult,i+1,j-1,cellCount);
             end
             
         end
-    else
-        return;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,17 +87,13 @@ function tmpResult = findNeighbours(B, tmpResult,i,j, cellCount)
         if(B(i+1,j+1) ~= 0)
             if( tmpResult(i+1,j+1) == 0 )
                 tmpResult(i+1,j+1) = cellCount;
-                findNeighbours(B,tmpresult,i+1,j+1,cellCount);
-            else
-                return;
+                tmpResult= findNeighbours(B,tmpResult,i+1,j+1,cellCount);
             end
             
         end
-    else
-        return;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    return;
     
 end

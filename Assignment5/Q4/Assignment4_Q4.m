@@ -1,22 +1,51 @@
 
 clc; close all; clear;
-img = imread('Training/images/31_training.tif');
-%imshow(img);
+img = im2double(imread('Training/images/31_training.tif'));
+mask = imread('Training/mask/31_training_mask.gif');
+gray = rgb2gray(img);
+ 
 
-R = img(:,:,1);
-G = img(:,:,2);
-B = img(:,:,3);
+S = imfilter(img, fspecial('average', [3 21]),'replicate');
 
-cr = img(250:350,250:350,:);
-imshow(rgb2gray(cr))
+k = 0.97;
+T = k*S;
+f = img < T;
 
-adapt = im2uint8(adaptthresh(rgb2gray(cr),0.2,'ForegroundPolarity','dark'));
+hist = imhist(gray(mask>0));
 
-thresh = multithresh(rgb2gray(cr) - adapt ,1);
-seg_I = imquantize(rgb2gray(cr) - adapt,thresh);
+figure;imhist(gray(mask>0));
+T = otsuthresh(hist);
+BW = imbinarize(gray,T);
+ff = gray>T;
+A = gray;
+A(ff) = 0;
+B = gray;
+B(~ff) = 0;
 
-imshow(adapt,[])
+Bhist = imhist(B(B > 0));
+%BT = otsuthresh(Bhist);
+BT = multithresh(B,7);
+BBW = imbinarize(B,BT);
 
+figure;imshow( BBW );
+%%
+
+padding = 50;
+
+cr = gray(200:250,350:400);
+
+
+
+S = imfilter(cr, fspecial('average', [6 6]),'replicate');
+k = 0.93;
+T = k*S;
+
+final = cr > T;
+SE = strel('square',3);
+finalIMOPEN = imopen(final,SE);
+
+imshow([cr T final finalIMOPEN]);
+figure; imshow([cr - T ],[]);
 
 %%
 
