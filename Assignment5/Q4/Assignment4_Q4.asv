@@ -8,8 +8,7 @@ TrainDataset =  LoadDataset(ImageDatasetPath);
 GT_Dateseet = LoadDataset(GT_DateseetPath);
 MaskDataset = LoadDataset(MaskDatasetPath);
 
-%6
-numOfImage = 3;
+numOfImage = 6;
 
 originalWidth = size(TrainDataset{numOfImage,2},2);
 originalHeight = size(TrainDataset{numOfImage,2},1);
@@ -40,9 +39,6 @@ for i=1:size(imageCell,1)
         f = imdilate(f,SE);
         SE = strel('square', 3);
         f = imerode(f,SE);
-        SE = strel('square', 1);
-        f = imerode(f,SE);
-        SE = strel('square', 3);
         f = imdilate(f,SE);
         imageCell{i,j} = f;
     end
