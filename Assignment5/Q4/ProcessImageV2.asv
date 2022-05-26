@@ -1,0 +1,16 @@
+function processedImage = ProcessImageV2(gray)
+     
+        S = imfilter(gray, fspecial('average', [15 15]),'replicate');
+        k = 0.97;
+        T = k*S;
+        processedImage = gray < T;
+        SE = strel('disk', 1);
+        RprocessedImage = imdilate(processedImage,SE);
+        SE = strel('square', 3);
+        processedImage = imerode(processedImage,SE);
+        SE = strel('square', 1);
+        processedImage = imerode(processedImage,SE);
+        SE = strel('square', 1);
+        %processedImage = imdilate(processedImage,SE);
+        
+end

@@ -1,26 +1,47 @@
 
 clc; close all; clear;
-ImageDatasetPath = 'Training/images/';
-GT_DateseetPath = 'Training/1st_manual/';
-MaskDatasetPath = 'Training/mask/';
+%ImageDatasetPath = 'Training/images/';
+%GT_DateseetPath = 'Training/1st_manual/';
+%MaskDatasetPath = 'Training/mask/';
+
+ImageDatasetPath = 'Test/images/';
+GT_DateseetPath = 'Test/1st_manual/';
+MaskDatasetPath = 'Test/mask/';
 
 TrainDataset =  LoadDataset(ImageDatasetPath);
 GT_Dateseet = LoadDataset(GT_DateseetPath);
 MaskDataset = LoadDataset(MaskDatasetPath);
 
-%6
-numOfImage = 3;
+mask = MaskDataset{1,2};
+gray = rgb2gray(im2double(TrainDataset{1,2}));
+S = imfilter(gray, fspecial('average', [55 55]),'replicate');
+a = adapthisteq(gray,'NumTiles',[8 8],'ClipLimit',0.005);
+
+
+figure;imshow([a],[])
+
+
+%%
+
+for imageNum=1:size(TrainDataset,1)
+    
+numOfImage = imageNum;
 
 originalWidth = size(TrainDataset{numOfImage,2},2);
 originalHeight = size(TrainDataset{numOfImage,2},1);
 
+patchSizeX = 50; % 565
+patchSizeY = 50; %584
 
-patchSizeX = 25;
-patchSizeY = 20;
+image = rgb2gray(TrainDataset{numOfImage,2});
+image = adapthisteq(image,'NumTiles',[8 8],'ClipLimit',0.005);
 
+% test
 
-imageCell = CreatePatches(TrainDataset{numOfImage,2},patchSizeX,patchSizeY);
+imageCell = CreatePatches(image,patchSizeX,patchSizeY);
+
 GT = GT_Dateseet{numOfImage,2};
+
 OriginalMask = MaskDataset{numOfImage,2};
 SE = strel('disk', 3);
 mask = imerode(OriginalMask,SE);
@@ -28,64 +49,52 @@ mask = imerode(OriginalMask,SE);
 for i=1:size(imageCell,1)
     for j=1:size(imageCell,2)
         img = imageCell{i,j};
-        gray = rgb2gray(img);
-
-
-        S = imfilter(gray, fspecial('average', [15 15]),'replicate');
-        k = 0.97;
-        T = k*S;
-        f = gray < T;
-
-        SE = strel('disk', 1);
-        f = imdilate(f,SE);
-        SE = strel('square', 3);
-        f = imerode(f,SE);
-        SE = strel('square', 1);
-        f = imerode(f,SE);
-        SE = strel('square', 3);
-        f = imdilate(f,SE);
-        imageCell{i,j} = f;
+        %gray = rgb2gray(img);
+        imageCell{i,j} = ProcessImageV2(img);
     end
 end
 
-final = CellToImage(imageCell);
-
-finalWidth = size(final,2);
-finalHeight = size(final,1);
+final = CalculateFinalImage(imageCell,mask,originalWidth,originalHeight);
 
 
-NewCol = zeros(finalHeight,uint8(originalWidth - finalWidth));
-NewRow = zeros(uint8(originalHeight - finalHeight),originalWidth);
+%final = bwmorph(final,'fill',5);
+final = bwareaopen(final, 35);
+%final = bwmorph(final,'thicken',1);
+%final = bwareaopen(final, 20,4);
 
-final = [final NewCol];
-final = [final; NewRow];
-final(~mask) = 0;
+[sen,spec,acc] = measure2(final, GT, mask);
 
-NotVessel = ~GT;
-NotFinal = ~final;
-
-TNImage = (NotVessel& NotFinal);
-TNImage(~mask) = 0;
-FPImage = (NotVessel& final);
-FPImage(~mask) = 0;
-TPImage =  (GT & final);
-TPImage(~mask) = 0;
-FNImage = logical(GT) - TPImage;
-FNImage(~mask) = 0;
-
-
-FN = sum(FNImage(mask > 1));
-TP = sum(TPImage(mask > 1));
-FP = sum(FPImage(mask > 1));
-TN = sum(TNImage(mask > 1));
-
-sen = TP / (TP+FN) * 100
-spec = TN / (TN+FP) * 100
-acc = (TP + TN) / (TP+TN+FP+FN) *100
-
+Results(imageNum,1) = sen;
+Results(imageNum,2) = spec;
+Results(imageNum,3) = acc;
 
 %figure;imshow(FNImage +TPImage +FPImage +TNImage )
-figure;imshow([final logical(GT) TNImage FPImage TPImage FNImage])
+%figure;imshow([final logical(GT) TNImage FPImage TPImage FNImage])
+if(imageNum == 1)
+    NotVessel = ~GT;
+    NotFinal = ~final;
+
+    TNImage = (NotVessel& NotFinal);
+    TNImage(~mask) = 0;
+    FPImage = (NotVessel& final);
+    FPImage(~mask) = 0;
+    TPImage =  (GT & final);
+    TPImage(~mask) = 0;
+    FNImage = logical(GT) - TPImage;
+    FNImage(~mask) = 0;
+    figure;imshow(rgb2gray(TrainDataset{numOfImage,2}));
+    figure;imshow([ final logical(GT) TNImage FPImage TPImage FNImage])
+    figure;imshow(final )
+
+    imwrite(final,'final_image.tif');
+end
+imageNum
+end
+
+[mean(Results(:,1)) mean(Results(:,2)) mean(Results(:,3))]
+
+
+
 
 %%
 
