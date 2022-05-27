@@ -12,28 +12,8 @@ TrainDataset =  LoadDataset(ImageDatasetPath);
 GT_Dateseet = LoadDataset(GT_DateseetPath);
 MaskDataset = LoadDataset(MaskDatasetPath);
 
-img = im2double(rgb2gray(TrainDataset{7,2}));
-mask = MaskDataset{7,2};
-
-T = im2uint8( adaptthresh(img));
-
-level = multithresh(T,10);
-seg_I = imquantize(T,level);
-
-massk = img;
-massk(seg_I~=8) = 0;
-massk(seg_I==8 )= 255;
-
-ringPixels = img(massk > 0);
-
-newThreshold = graythresh(ringPixels);
-
-BW = imquantize(img,newThreshold);
 
 
-
-figure; imshow( BW,[] );
-%%
 
 for imageNum=1:1%size(TrainDataset,1)
     
@@ -47,22 +27,67 @@ OriginalMask = MaskDataset{numOfImage,2};
 SE = strel('disk', 3);
 mask = imerode(OriginalMask,SE);
 
-patchSizeX = 50; % 565
-patchSizeY = 75; %584
-
-image = rgb2gray(TrainDataset{numOfImage,2});
-
-image1 = TrainDataset{numOfImage,2}(:,:,1);
-image2 = TrainDataset{numOfImage,2}(:,:,2);
-image3 = TrainDataset{numOfImage,2}(:,:,3);
-
-final = ProcessOnSingleImage(image,mask,patchSizeX,patchSizeY,originalWidth,originalHeight);
-
-maxIm3 = max(image(:));
-h = image > maxIm3 - 12;
+img = im2double(rgb2gray(TrainDataset{numOfImage,2}));
 
 
-final( h) = 0;
+numOfThresh = 20;
+
+T = im2uint8( adaptthresh(img));
+
+level = multithresh(T,numOfThresh);
+seg_I = imquantize(T,level);
+
+final = logical(img*0);
+
+for i=1: numOfThresh + 1
+    massk = img;
+    massk(seg_I~=i) = 0;
+    massk(seg_I==i )= 255;
+
+    %ringPixels = img(massk > 0);
+
+    %newThreshold = graythresh(ringPixels);
+
+    %BW = imcomplement(imbinarize(img,newThreshold));
+    
+    J = img;
+    J(~massk) = 0;
+    
+    %S = imfilter(J, fspecial('average', 5));
+    S = customFilter(J,massk,10,10);
+    S(~massk) = 0;
+    k = 0.97;
+    T = k*S;
+    processedImage = J < T;
+        
+
+    
+    
+    if(imageNum == 1)
+        figure;imshow(J)
+        figure;imshow(S)
+        figure;imshow(processedImage)
+    end
+    final = final | processedImage;
+end
+final(~mask) = 0;
+
+processedImage = bwareaopen(final, 1);
+processedImage = bwmorph(processedImage,'bridge');
+processedImage = bwmorph(processedImage,'bridge');
+processedImage = bwmorph(processedImage,'spur');
+processedImage = bwmorph(processedImage,'fill'); 
+processedImage = bwmorph(processedImage,'fill'); 
+
+SE = strel('disk', 1);
+processedImage = imdilate(processedImage,SE);
+SE = strel('square', 2);
+processedImage = imerode(processedImage,SE);
+SE = strel('square', 1);
+processedImage = imerode(processedImage,SE);
+SE = strel('square', 2);
+processedImage = imdilate(processedImage,SE);
+final = processedImage;
 
 
 GT = GT_Dateseet{numOfImage,2};
