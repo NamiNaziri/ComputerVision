@@ -102,11 +102,55 @@ Since the salt and pepper noise produces pixels of zeros and ones then we know w
   Original Image             | 70 percent salt and pepper |  median filter |  Suggested method
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
 ![I](https://user-images.githubusercontent.com/49837425/181793625-c715ab95-73fa-428e-9a19-f78a4b8baa98.png) |  ![j](https://user-images.githubusercontent.com/49837425/181793641-49172138-29bd-4402-a3e7-f3eefc89972b.png) |  ![med](https://user-images.githubusercontent.com/49837425/181793766-83c3c744-7002-4c22-b712-4cbe8900047a.png) | ![finalPic](https://user-images.githubusercontent.com/49837425/181793825-a4e93c99-d349-413b-b54d-64b84ebe66ac.png)
+
+</div>
+
+## Puzzle
+
+A picture is seperated into 160 patches. given the four patches of top left, top right, bottom left and bottom right, solve the puzzle.
+
+<div align="center">
   
 
+### Result
+
+The results are for 40 patches puzzle.
+
+</div>
 
 
+## Counting Cells
 
+Counting the number of the cells (labeling cells) in an image using bfs and extract area and average brightness of each cell to an excel sheet.
+
+## Extraction of blood vessels 
+
+An application to extract blood vessels from the image. The images are from DRIVE dataset.
+
+<div align="center">
   
 
-  </div>
+### Result
+
+Original Image             |  Extracted Vessels
+:-------------------------:|:-------------------------:
+![i](https://user-images.githubusercontent.com/49837425/181808467-eed33ad7-85dc-4e3f-9858-a9ce16951e4b.png) |  ![final](https://user-images.githubusercontent.com/49837425/181808215-f10b09f0-f923-42de-b9a2-d4e4c4a9077a.png)
+
+</div>
+
+
+## Finding Optic Disk
+
+Finding Optic Disk of an eye using Circle Hough Transform ([Wikipedia](https://en.wikipedia.org/wiki/Circle_Hough_Transform))
+
+### Result
+
+Original Image             |  Extracted Optic Disk
+:-------------------------:|:-------------------------:
+![01_test](https://user-images.githubusercontent.com/49837425/181809549-28c22f24-403d-4029-ba0c-fa5ec02b0e9f.png) |  ![test_output](https://user-images.githubusercontent.com/49837425/181809445-f51e6df8-d411-4fc6-bf84-214aa8c513c3.png)
+
+Original Image             |  Extracted Optic Disk
+:-------------------------:|:-------------------------:
+![25_training](https://user-images.githubusercontent.com/49837425/181809545-9acf0d1b-eed2-465b-be0d-7835e5aaf45f.png) |  ![Train_output](https://user-images.githubusercontent.com/49837425/181809456-de4b1b05-a694-4a10-a1d2-bba8fa635245.png)
+
+</div>
